@@ -12,6 +12,7 @@ const { GIT_DIRTY, GIT_COMMIT, PACKAGE_VERSION, BUILD_TIME } = buildInfo
 export default function SwaggerUI(opts) {
   const localstore = JSON.parse(localStorage.getItem("userInfo") ?? "{}")
   const token = localstore?.accessToken
+  console.warn(`##### here is my local token '${token}'`)
   win.versions = win.versions || {}
   win.versions.swaggerUi = {
     version: PACKAGE_VERSION,
@@ -41,7 +42,9 @@ export default function SwaggerUI(opts) {
     deepLinking: false,
     tryItOutEnabled: false,
     requestInterceptor: (config => {
+      console.warn(`##### here is requestInterceptor config '${config}'`)
       if (token) {
+        console.warn(`##### I am inside if block of requestInterceptor`)
         config.headers["Authorization"] = "Bearer " + token
       }
       return config
