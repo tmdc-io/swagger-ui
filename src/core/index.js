@@ -10,7 +10,8 @@ import win from "./window"
 const { GIT_DIRTY, GIT_COMMIT, PACKAGE_VERSION, BUILD_TIME } = buildInfo
 
 export default function SwaggerUI(opts) {
-
+  const localstore = JSON.parse(localStorage.getItem("userInfo") ?? "{}")
+  const token = localstore?.accessToken
   win.versions = win.versions || {}
   win.versions.swaggerUi = {
     version: PACKAGE_VERSION,
@@ -39,7 +40,12 @@ export default function SwaggerUI(opts) {
     displayRequestDuration: false,
     deepLinking: false,
     tryItOutEnabled: false,
-    requestInterceptor: (a => a),
+    requestInterceptor: (config => {
+      if (token) {
+        config.headers["Authorization"] = "Bearer " + token
+      }
+      return config
+    }),
     responseInterceptor: (a => a),
     showMutatedRequest: true,
     defaultModelRendering: "example",
@@ -97,11 +103,11 @@ export default function SwaggerUI(opts) {
     },
 
     // Initial state
-    initialState: { },
+    initialState: {},
 
     // Inline Plugin
-    fn: { },
-    components: { },
+    fn: {},
+    components: {},
 
     syntaxHighlight: {
       activated: true,
@@ -135,12 +141,12 @@ export default function SwaggerUI(opts) {
     }, constructorConfig.initialState)
   }
 
-  if(constructorConfig.initialState) {
+  if (constructorConfig.initialState) {
     // if the user sets a key as `undefined`, that signals to us that we
     // should delete the key entirely.
     // known usage: Swagger-Editor validate plugin tests
     for (var key in constructorConfig.initialState) {
-      if(
+      if (
         Object.prototype.hasOwnProperty.call(constructorConfig.initialState, key)
         && constructorConfig.initialState[key] === undefined
       ) {
@@ -149,7 +155,7 @@ export default function SwaggerUI(opts) {
     }
   }
 
-  let inlinePlugin = ()=> {
+  let inlinePlugin = () => {
     return {
       fn: constructorConfig.fn,
       components: constructorConfig.components,
@@ -167,7 +173,7 @@ export default function SwaggerUI(opts) {
     let mergedConfig = deepExtend({}, localConfig, constructorConfig, fetchedConfig || {}, queryConfig)
 
     // deep extend mangles domNode, we need to set it manually
-    if(domNode) {
+    if (domNode) {
       mergedConfig.domNode = domNode
     }
 
@@ -185,12 +191,12 @@ export default function SwaggerUI(opts) {
       }
     }
 
-    if(mergedConfig.domNode) {
+    if (mergedConfig.domNode) {
       system.render(mergedConfig.domNode, "App")
-    } else if(mergedConfig.dom_id) {
+    } else if (mergedConfig.dom_id) {
       let domNode = document.querySelector(mergedConfig.dom_id)
       system.render(domNode, "App")
-    } else if(mergedConfig.dom_id === null || mergedConfig.domNode === null) {
+    } else if (mergedConfig.dom_id === null || mergedConfig.domNode === null) {
       // do nothing
       // this is useful for testing that does not need to do any rendering
     } else {
