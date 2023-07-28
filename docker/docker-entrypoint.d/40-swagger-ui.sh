@@ -1,7 +1,7 @@
 #! /bin/sh
 
 set -e
-NGINX_ROOT=/usr/share/nginx/html
+NGINX_ROOT=/usr/share/nginx/html/swagger-ui
 INITIALIZER_SCRIPT=$NGINX_ROOT/swagger-initializer.js
 NGINX_CONF=/etc/nginx/conf.d/default.conf
 
