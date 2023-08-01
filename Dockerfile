@@ -17,7 +17,7 @@ ENV API_KEY="**None**" \
 
 COPY --chown=nginx:nginx --chmod=0666 ./docker/default.conf.template ./docker/cors.conf /etc/nginx/templates/
 
-COPY --chmod=0666 ./dist/* /usr/share/nginx/html/swagger-ui/
+COPY --chmod=0666 ./dist/* /usr/share/nginx/html/
 COPY --chmod=0555 ./docker/docker-entrypoint.d/ /docker-entrypoint.d/
 COPY --chmod=0666 ./docker/configurator /usr/share/nginx/configurator
 
